@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinhui Z. | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Playfair Display', serif; }
+        html { scroll-behavior: smooth; }
+        section, footer { scroll-margin-top: 4rem; }
+        
+        .hero-image {
+            background-image: url('assets/hero.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-color: #f0f0f0;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .page-overlay { transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); transform: translateY(100%); }
+        .page-overlay.active { transform: translateY(0); }
+        
+        /* 交叉淡入淡出动画 */
+        #inner-page-content { transition: opacity 0.4s ease-in-out; opacity: 0; }
+
+        @media (min-width: 768px) {
+            .kawauchi-grid > div { width: calc(33.3333% - 1.334rem); }
+        }
+        @media (max-width: 767px) {
+            .kawauchi-grid > div { width: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-[#fafafa] text-gray-900 leading-relaxed antialiased relative">
+
+    <header class="md:hidden bg-[#fafafa] sticky top-0 z-40 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+       <div class="text-sm font-medium tracking-[0.2em] text-gray-500">Jinhui Z.</div>
+        <button id="hamburger" class="text-xl">☰</button>
+    </header>
+
+    <div id="mobile-menu" class="md:hidden fixed inset-0 bg-[#fafafa] z-50 px-8 py-12 overflow-y-auto no-scrollbar hidden flex-col">
+        <button id="close-menu" class="absolute top-4 right-6 text-xl text-gray-400">✕</button>
+        <nav class="space-y-8 text-sm mt-4">
+            <a href="#biography" class="block mobile-nav-link whitespace-nowrap">个人介绍 / Biography</a>
+            <a href="#photography" class="block mobile-nav-link whitespace-nowrap">摄影作品 / Photography</a>
+            <a href="#projects" class="block mobile-nav-link whitespace-nowrap">项目 / Projects</a>
+            <a href="#photobooks" class="block mobile-nav-link whitespace-nowrap">个人画册 / Photobooks</a>
+            <a href="#video" class="block mobile-nav-link whitespace-nowrap">视频作品 / Video Works</a>
+            <a href="#contact" class="block mobile-nav-link whitespace-nowrap">联系方式 / Contact</a>
+        </nav>
+    </div>
+
+    <div class="flex">
+        
+        <aside class="hidden md:flex flex-col w-[22vw] lg:w-[18vw] min-w-[200px] fixed top-0 left-0 bottom-0 bg-[#f2f4f6] px-8 py-16 text-[13px] overflow-y-auto no-scrollbar z-30 shadow-[1px_0_10px_rgba(0,0,0,0.02)]">
+            <div class="mb-14 font-bold text-lg tracking-[0.2em] text-gray-800 uppercase whitespace-nowrap">Jinhui Z.</div>
+            <nav class="flex-grow space-y-6">
+                <div class="relative"><a href="#biography" class="sidebar-link hover:text-gray-400 transition-colors whitespace-nowrap">个人介绍 / Biography</a></div>
+                <div>
+                    <div class="flex justify-between items-center cursor-pointer group" onclick="toggleMenu('menu-photo')">
+                        <a href="#photography" class="sidebar-link group-hover:text-gray-400 transition-colors whitespace-nowrap">摄影作品 / Photography</a>
+                        <span id="menu-photo-arrow" class="text-gray-300 text-[10px] transition-transform duration-300">▼</span>
+                    </div>
+                    <div id="menu-photo" class="hidden flex-col pl-4 mt-3 space-y-4 border-l border-gray-200 ml-1">
+                        <a href="#" onclick="openInnerPage('album-2024')" class="text-gray-500 hover:text-gray-900 transition-colors">2024年</a>
+                        <a href="#" onclick="openInnerPage('album-2025')" class="text-gray-500 hover:text-gray-900 transition-colors">2025年</a>
+                        <a href="#" onclick="openInnerPage('album-2026')" class="text-gray-500 hover:text-gray-900 transition-colors">2026年</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center cursor-pointer group" onclick="toggleMenu('menu-proj')">
+                        <a href="#projects" class="sidebar-link group-hover:text-gray-400 transition-colors whitespace-nowrap">项目 / Projects</a>
+                        <span id="menu-proj-arrow" class="text-gray-300 text-[10px] transition-transform duration-300">▼</span>
+                    </div>
+                    <div id="menu-proj" class="hidden flex-col pl-4 mt-3 space-y-4 border-l border-gray-200 ml-1">
+                        <div>
+                            <div class="flex justify-between items-center cursor-pointer group" onclick="toggleMenu('menu-prog')">
+                                <span class="text-gray-500 group-hover:text-gray-900 transition-colors">进行中 / In Progress</span>
+                                <span id="menu-prog-arrow" class="text-gray-300 text-[10px] transition-transform duration-300">▼</span>
+                            </div>
+                            <div id="menu-prog" class="hidden flex-col pl-4 mt-3 space-y-3 border-l border-gray-200 ml-1">
+                                <a href="#" onclick="openInnerPage('proj-rswj')" class="text-gray-400 hover:text-gray-900 transition-colors">如是我见</a>
+                                <a href="#" onclick="openInnerPage('proj-lw')" class="text-gray-400 hover:text-gray-900 transition-colors">莱芜的故事</a>
+                                <a href="#" onclick="openInnerPage('proj-ex')" class="text-gray-400 hover:text-gray-900 transition-colors">鳄溪志</a>
+                            </div>
+                        </div>
+                        <a href="#" onclick="openInnerPage('proj-completed')" class="text-gray-500 hover:text-gray-900 transition-colors block">已完成项目</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center cursor-pointer group" onclick="toggleMenu('menu-book')">
+                        <a href="#photobooks" class="sidebar-link group-hover:text-gray-400 transition-colors whitespace-nowrap">个人画册 / Photobooks</a>
+                        <span id="menu-book-arrow" class="text-gray-300 text-[10px] transition-transform duration-300">▼</span>
+                    </div>
+                    <div id="menu-book" class="hidden flex-col pl-4 mt-3 space-y-3 border-l border-gray-200 ml-1">
+                        <a href="#" onclick="openInnerPage('book-shidai')" class="text-gray-500 hover:text-gray-900 transition-colors">《时代技艺》</a>
+                        <a href="#" onclick="openInnerPage('book-xiangcun')" class="text-gray-500 hover:text-gray-900 transition-colors">《乡村回忆集》</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center cursor-pointer group" onclick="toggleMenu('menu-video')">
+                        <a href="#video" class="sidebar-link group-hover:text-gray-400 transition-colors whitespace-nowrap">视频作品 / Video Works</a>
+                        <span id="menu-video-arrow" class="text-gray-300 text-[10px] transition-transform duration-300">▼</span>
+                    </div>
+                    <div id="menu-video" class="hidden flex-col pl-4 mt-3 space-y-4 border-l border-gray-200 ml-1">
+                        <a href="#" onclick="openInnerPage('video-stills')" class="text-gray-500 hover:text-gray-900 transition-colors block">静帧 / Stills</a>
+                        <div>
+                            <div class="flex justify-between items-center cursor-pointer group" onclick="toggleMenu('menu-vid-sub')">
+                                <span class="text-gray-500 group-hover:text-gray-900 transition-colors">视频 / Videos</span>
+                                <span id="menu-vid-sub-arrow" class="text-gray-300 text-[10px] transition-transform duration-300">▼</span>
+                            </div>
+                            <div id="menu-vid-sub" class="hidden flex-col pl-4 mt-3 space-y-3 border-l border-gray-200 ml-1">
+                                <a href="#" onclick="openInnerPage('video-hl')" class="text-gray-400 hover:text-gray-900 transition-colors">何以吕布</a>
+                                <a href="#" onclick="openInnerPage('video-who')" class="text-gray-400 hover:text-gray-900 transition-colors">我是谁</a>
+                                <a href="#" onclick="openInnerPage('video-cs')" class="text-gray-400 hover:text-gray-900 transition-colors">潮汕英歌舞</a>
+                                <a href="#" onclick="openInnerPage('video-ss')" class="text-gray-400 hover:text-gray-900 transition-colors">数说农情</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative"><a href="#contact" class="sidebar-link hover:text-gray-400 transition-colors whitespace-nowrap">联系方式 / Contact</a></div>
+            </nav>
+            <div class="text-xs text-gray-400 mt-16">© 2026 Zhujinhui</div>
+        </aside>
+        
+        <main class="w-full md:pl-[22vw] lg:pl-[18vw]">
+         <section id="hero" class="w-full h-screen flex justify-end items-center py-2 md:py-4 lg:py-5 pr-0">
+                
+                <div class="w-[95%] lg:w-[97%] h-full max-h-[94vh] lg:max-h-[96vh] hero-image relative shadow-sm overflow-hidden ml-auto">
+                    
+                    <div class="absolute inset-0 bg-black/[0.015] hover:bg-transparent transition-colors duration-1000"></div>
+                    
+                </div>
+                
+            </section>
+            
+            <div class="w-full ml-auto px-4 md:pr-6 md:pl-16 py-10 md:py-16 space-y-12 md:space-y-16">
+                
+        <section id="biography" class="w-[95%] xl:w-[85%] ml-auto">
+                    <h2 class="text-xl font-bold mb-10 md:mb-16 border-b border-gray-200 pb-2 text-right">个人介绍 / Biography</h2>
+
+                    <div class="flex flex-col-reverse md:flex-row justify-end items-stretch gap-6 md:gap-8 mb-16">
+                        
+                        <div class="flex flex-col justify-between text-right font-serif py-1 md:py-1.5">
+                            <div class="space-y-2">
+                                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-widest">朱锦辉 / Jinhui Zhu</h3>
+                                <p class="text-sm md:text-base text-gray-600 tracking-wide">汕头大学 · 新闻学 (2023-2027级)</p>
+                            </div>
+                            <p class="text-[11px] md:text-xs text-gray-400 tracking-[0.15em] uppercase">影像创作者 / 制片 / AIGC 探索者</p>
+                        </div>
+
+                        <div class="w-24 md:w-32 flex-shrink-0 bg-white p-1 border border-gray-200 shadow-sm">
+                            <img src="assets/avatar.jpg" alt="Jinhui Zhu" class="w-full h-auto object-cover block">
+                        </div>
+                    </div>
+
+                    <div class="max-w-2xl ml-auto border-t border-gray-200 pt-8 text-[12px] md:text-[13px] text-gray-600 space-y-8 md:space-y-6 font-serif leading-relaxed">
+                        
+                        <div class="flex flex-col md:flex-row gap-2 md:gap-12">
+                            <div class="md:w-24 flex-shrink-0 text-gray-400 tracking-widest uppercase mb-1 md:mb-0">Experience</div>
+                            <div class="space-y-3">
+                                <div>
+                                    <span class="text-gray-900 font-medium">OCEANLAB 实践中心</span> / 影像制作 (2024-2026)
+                                </div>
+                                <div>
+                                    <span class="text-gray-900 font-medium">深圳市潮创势科技有限公司</span> / 制作实习 (2025)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-2 md:gap-12 pt-6 border-t border-gray-100">
+                            <div class="md:w-24 flex-shrink-0 text-gray-400 tracking-widest uppercase mb-1 md:mb-0">Projects</div>
+                            <div class="space-y-3">
+                                <div>
+                                    <span class="text-gray-900 font-medium">短剧《潮州奇谭》</span> / 制片助理 (2025)
+                                </div>
+                                <div>
+                                    <span class="text-gray-900 font-medium">汕大海洋生物研究所纪录片</span> / 制片人 & 摄影 (2025)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col md:flex-row gap-2 md:gap-12 pt-6 border-t border-gray-100">
+                            <div class="md:w-24 flex-shrink-0 text-gray-400 tracking-widest uppercase mb-1 md:mb-0">Awards</div>
+                            <div class="space-y-3">
+                                <div>2025 第二届全国街头摄影大展 / 入选</div>
+                                <div>2025 适马第十届全国高校摄影大赛 / 三等奖</div>
+                                <div>2024 “讲好中国故事”创意传播国际大赛 / 三等奖</div>
+                                <div>第五届大学生校园媒体大赛 / 三等奖</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </section>
+
+                <section id="photography">
+                    <h2 class="text-xl font-bold mb-4 md:mb-6 border-b border-gray-200 pb-2 text-right w-[95%] xl:w-[85%] ml-auto">摄影作品 / Photography</h2>
+                    <div class="flex flex-wrap justify-end gap-x-8 gap-y-8 md:gap-y-12 w-full kawauchi-grid">
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('album-2024')">
+                            <div class="w-full aspect-[4/3] bg-gray-100 relative border border-gray-200 overflow-hidden">
+                                <img src="covers/photo-cover-2024.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h3 class="text-base font-bold text-gray-900">2024</h3></div>
+                        </div>
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('album-2025')">
+                            <div class="w-full aspect-[4/3] bg-gray-100 relative border border-gray-200 overflow-hidden">
+                                <img src="covers/photo-cover-2025.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h3 class="text-base font-bold text-gray-900">2025</h3></div>
+                        </div>
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('album-2026')">
+                            <div class="w-full aspect-[4/3] bg-gray-100 relative border border-gray-200 overflow-hidden">
+                                <img src="covers/photo-cover-2026.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h3 class="text-base font-bold text-gray-900">2026</h3></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="projects">
+                    <h2 class="text-xl font-bold mb-4 md:mb-6 border-b border-gray-200 pb-2 text-right w-[95%] xl:w-[85%] ml-auto">项目 / Projects</h2>
+                    <h3 class="text-sm font-serif italic mb-4 md:mb-6 text-gray-500 text-right w-[95%] xl:w-[85%] ml-auto">进行中 / In Progress</h3>
+                    <div class="flex flex-wrap justify-end gap-x-8 gap-y-8 md:gap-y-12 w-full kawauchi-grid mb-10">
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('proj-rswj')">
+                            <div class="w-full aspect-[4/3] bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/cover-rswj.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900">如是我见</h4></div>
+                        </div>
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('proj-lw')">
+                            <div class="w-full aspect-[4/3] bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/cover-lw.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900">莱芜的故事</h4></div>
+                        </div>
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('proj-ex')">
+                            <div class="w-full aspect-[4/3] bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/cover-ex.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900">鳄溪志</h4></div>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-serif italic mb-4 md:mb-6 text-gray-500 text-right w-[95%] xl:w-[85%] ml-auto">已完成 / Completed</h3>
+                    <div class="flex flex-wrap justify-end gap-x-8 gap-y-8 md:gap-y-12 w-full kawauchi-grid">
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('proj-completed')">
+                            <div class="w-full aspect-[4/3] bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/cover-completed.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900">已完成项目</h4></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="photobooks">
+                    <h2 class="text-xl font-bold mb-4 md:mb-6 border-b border-gray-200 pb-2 text-right max-w-4xl ml-auto">个人画册 / Photobooks</h2>
+                    
+                    <div class="grid grid-cols-2 gap-6 md:gap-10 w-full md:w-3/4 lg:w-2/3 ml-auto">
+                        
+                        <div class="space-y-3 md:space-y-4 group cursor-pointer flex flex-col" onclick="openInnerPage('book-shidai')">
+                            <div class="w-full aspect-[3/4] bg-gray-50 flex items-center justify-center p-4 border border-gray-200 overflow-hidden">
+                                <img src="covers/book-cover1.jpg" class="w-full h-full object-contain shadow-sm transition-transform duration-500 group-hover:scale-[1.05]">
+                            </div>
+                            <div class="text-left pl-1 border-t border-gray-200 pt-2 flex-1">
+                                <h3 class="text-base font-bold text-gray-900">《时代技艺》</h3>
+                                <span class="text-[10px] uppercase tracking-widest text-gray-400">Read Gallery</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 md:space-y-4 group cursor-pointer flex flex-col" onclick="openInnerPage('book-xiangcun')">
+                            <div class="w-full aspect-[3/4] bg-gray-50 flex items-center justify-center p-4 border border-gray-200 overflow-hidden">
+                                <img src="covers/book-cover2.jpg" class="w-full h-full object-contain shadow-sm transition-transform duration-500 group-hover:scale-[1.05]">
+                            </div>
+                            <div class="text-left pl-1 border-t border-gray-200 pt-2 flex-1">
+                                <h3 class="text-base font-bold text-gray-900">《乡村回忆集》</h3>
+                                <span class="text-[10px] uppercase tracking-widest text-gray-400">Read Gallery</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="video">
+                    <h2 class="text-xl font-bold mb-4 md:mb-6 border-b border-gray-200 pb-2 text-right w-[95%] xl:w-[85%] ml-auto">视频作品 / Video Works</h2>
+                    
+                    <h3 class="text-sm font-serif italic mb-4 md:mb-6 text-gray-500 text-right w-[95%] xl:w-[85%] ml-auto">静帧 / Stills</h3>
+                    <div class="flex flex-wrap justify-end gap-x-8 gap-y-8 md:gap-y-12 w-full kawauchi-grid mb-10">
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('video-stills')">
+                            <div class="relative w-full aspect-video bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/video-cover-stills.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900 uppercase">视频静帧集</h4></div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-sm font-serif italic mb-4 md:mb-6 text-gray-500 text-right w-[95%] xl:w-[85%] ml-auto">视频 / Videos</h3>
+                    <div class="flex flex-wrap justify-end gap-x-8 gap-y-8 md:gap-y-12 w-full kawauchi-grid">
+                        
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('video-hl')">
+                            <div class="relative w-full aspect-video bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/video-cover-hl.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                                <div class="absolute w-10 h-10 bg-white/90 rounded-full flex items-center justify-center text-gray-900 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 opacity-80 group-hover:opacity-100"><span class="ml-1 text-sm">▶</span></div>
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900 uppercase">微纪录片-何以吕布</h4></div>
+                        </div>
+                        
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('video-who')">
+                            <div class="relative w-full aspect-video bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/video-cover-who.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                                <div class="absolute w-10 h-10 bg-white/90 rounded-full flex items-center justify-center text-gray-900 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 opacity-80 group-hover:opacity-100"><span class="ml-1 text-sm">▶</span></div>
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900 uppercase">文艺短片-我的路</h4></div>
+                        </div>
+                        
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('video-cs')">
+                            <div class="relative w-full aspect-video bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/video-cover-cs.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                                <div class="absolute w-10 h-10 bg-white/90 rounded-full flex items-center justify-center text-gray-900 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 opacity-80 group-hover:opacity-100"><span class="ml-1 text-sm">▶</span></div>
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900 uppercase">微纪录片-潮汕英歌舞</h4></div>
+                        </div>
+                        
+                        <div class="space-y-2 md:space-y-3 cursor-pointer group flex flex-col" onclick="openInnerPage('video-ss')">
+                            <div class="relative w-full aspect-video bg-gray-100 border border-gray-200 overflow-hidden">
+                                <img src="covers/video-cover-ss.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
+                                <div class="absolute w-10 h-10 bg-white/90 rounded-full flex items-center justify-center text-gray-900 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 opacity-80 group-hover:opacity-100"><span class="ml-1 text-sm">▶</span></div>
+                            </div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900 uppercase">专题片-数说农情</h4></div>
+                        </div>
+                        
+                    </div>
+                </section>
+
+               <footer id="contact" class="pt-12 md:pt-20 border-t border-gray-200 w-[95%] xl:w-[85%] ml-auto flex flex-col items-end gap-4 mb-20">
+                    <div class="text-right space-y-1">
+                        <h2 class="text-lg font-bold text-gray-900 uppercase tracking-widest mb-3">Contact</h2>
+                        <p class="text-sm text-gray-500">Email: zhujinhui2027@163.com</p>
+                        <p class="text-sm text-gray-500">Phone: 15119929518</p>
+                    </div>
+                    
+                    <a href="https://mail.163.com/" 
+                       target="_blank" 
+                       onclick="navigator.clipboard.writeText('zhujinhui2027@163.com'); this.innerText='COPIED & OPENING...'; setTimeout(()=>{this.innerText='SEND MESSAGE'}, 2000);" 
+                       class="border border-gray-800 px-0 py-2 mt-2 text-xs uppercase tracking-widest hover:bg-gray-900 hover:text-white transition-all duration-300 w-48 text-center cursor-pointer">
+                        Send Message
+                    </a>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <div id="inner-page-overlay" class="page-overlay fixed top-0 right-0 bottom-0 left-0 md:left-[22vw] lg:left-[18vw] bg-[#f2f4f6] z-[60] overflow-y-auto hidden flex-col border-l border-gray-100">
+        <div class="sticky top-0 bg-[#fafafa]/95 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 z-10 flex justify-between items-center">
+            <button onclick="closeInnerPage()" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-2">
+                <span class="text-xl leading-none">←</span> 返回 / Back
+            </button>
+            <div class="text-xs text-gray-400 tracking-widest uppercase">Jinhui Z.</div>
+        </div>
+        <div id="inner-page-content" class="flex-1 w-full ml-auto px-3 md:pr-2 md:pl-16 py-6 md:py-10 flex flex-col items-end"></div>
+    </div>
+
+    <div id="media-modal" class="fixed inset-0 z-[100] bg-[#fafafa]/95 hidden flex justify-end items-center p-0 md:p-6 md:pr-6 transition-opacity duration-300 opacity-0">
+        <button id="close-modal" class="absolute top-6 left-6 md:top-10 md:left-10 text-gray-400 text-5xl hover:text-gray-900 transition-colors z-[101]">&times;</button>
+        <div id="modal-content" class="relative w-full md:w-[90vw] h-full flex justify-end items-center"></div>
+    </div>
+
+    <div id="data-storage" class="hidden">
+        
+        <div id="data-album-2024">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">2024 摄影集</h2>
+            </div>
+            <div class="flex flex-col items-end space-y-4 w-full">
+                <img src="2024/2024-01.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-02.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-03.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-04.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-05.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-06.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-07.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-08.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-09.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-10.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-11.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-12.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-13.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-14.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-15.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-16.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-17.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-18.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-19.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+                <img src="2024/2024-20.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+            </div>
+        </div>
+
+        <div id="data-album-2025">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">2025 摄影集</h2>
+            </div>
+            <div class="flex flex-col items-end space-y-4 w-full">
+                <script>
+                    for(let i=1; i<=20; i++) {
+                        let num = i < 10 ? '0' + i : i;
+                        document.write(`<img src="2025/2025-${num}.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">`);
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div id="data-album-2026">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">2026 摄影集</h2>
+            </div>
+            <div class="flex flex-col items-end space-y-4 w-full">
+                <script>
+                    for(let i=1; i<=20; i++) {
+                        let num = i < 10 ? '0' + i : i;
+                        document.write(`<img src="2026/2026-${num}.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">`);
+                    }
+                </script>
+            </div>
+        </div>
+
+       <div id="data-proj-rswj">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">如是我见</h2>
+                <span class="text-xs tracking-widest uppercase text-gray-400 block">Diptychs / 生活充满联系</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-1 md:gap-2 w-full md:w-5/6 lg:w-3/4 ml-auto bg-gray-50 p-2 md:p-4 border border-gray-200">
+                
+                <img src="rswj/rswj-01.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-02.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-03.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-04.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-05.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-06.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-07.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-08.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-09.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-10.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-11.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-12.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-13.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-14.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-15.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-16.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-17.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-18.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-19.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-20.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-21.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-22.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-23.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-24.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-25.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-26.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-27.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-28.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-29.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-30.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-31.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-32.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-33.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-34.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="rswj/rswj-35.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="rswj/rswj-36.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+            </div>
+        </div>
+        
+      <div id="data-proj-lw">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">莱芜的故事</h2>
+                <span class="text-xs tracking-widest uppercase text-gray-400 block">The Ocean and Human Beings / 海菜何来</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-1 md:gap-2 w-full md:w-5/6 lg:w-3/4 ml-auto bg-gray-50 p-2 md:p-4 border border-gray-200">
+                
+                <img src="lw/lw-01.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-02.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-03.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-04.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-05.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-06.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-07.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-08.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-09.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-10.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-11.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-12.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-13.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-14.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-15.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-16.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-17.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-18.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-19.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-20.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-21.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-22.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-23.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-24.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-25.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-26.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-27.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-28.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-29.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="lw/lw-30.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="lw/lw-31.jpg" loading="lazy" class="w-full h-auto object-contain block col-span-2">
+                
+            </div>
+        </div>
+       <div id="data-proj-ex">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">鳄溪志</h2>
+                <span class="text-xs tracking-widest uppercase text-gray-400 block">Search for stories along the river / 一条江的故事</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-1 md:gap-2 w-full md:w-5/6 lg:w-3/4 ml-auto bg-gray-50 p-2 md:p-4 border border-gray-200">
+                
+                <img src="ex/ex-01.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-02.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-03.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-04.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-05.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-06.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-07.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-08.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-09.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-10.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-11.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-12.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-13.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-14.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-15.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-16.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-17.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-18.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-19.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-20.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-21.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-22.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-23.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-24.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-25.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-26.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-27.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-28.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-29.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-30.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+                <img src="ex/ex-31.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                <img src="ex/ex-32.jpg" loading="lazy" class="w-full h-auto object-contain block">
+                
+            </div>
+        </div>
+        <div id="data-proj-completed"><div class="w-full w-[95%] xl:w-[85%] ml-auto text-right py-20">已完成项目内容</div></div>
+
+        <div id="data-book-shidai">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">《时代技艺》</h2>
+            </div>
+            <div class="flex flex-col items-end space-y-6 w-full">
+                <script>
+                    for(let i=1; i<=10; i++) {
+                        let num = i < 10 ? '0' + i : i;
+                        document.write(`<img src="books/shidai-${num}.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[90vh] object-contain block ml-auto shadow-sm border border-gray-200">`);
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div id="data-book-xiangcun">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">《乡村回忆集》</h2>
+            </div>
+            <div class="flex flex-col items-end space-y-6 w-full">
+                <script>
+                    for(let i=1; i<=26; i++) {
+                        let num = i < 10 ? '0' + i : i;
+                        document.write(`<img src="books/xiangcun-${num}.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[90vh] object-contain block ml-auto shadow-sm border border-gray-200">`);
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div id="data-video-stills">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">静帧 / Stills</h2>
+            </div>
+            <div class="flex flex-col items-end space-y-4 w-full">
+                <img src="stills/stills-01.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
+            </div>
+        </div>
+
+        <div id="data-video-hl">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6"><h2 class="text-2xl md:text-3xl font-bold font-serif">何以吕布</h2></div>
+            <div class="w-full w-[95%] xl:w-[85%] aspect-video bg-gray-100 border border-gray-200 ml-auto md:mr-2">
+                <iframe src="https://player.bilibili.com/player.html?isOutside=true&aid=116402673556283&bvid=BV1PYQgBAEXg&cid=37500226880&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" referrerpolicy="no-referrer" style="width:100%; height:100%;"></iframe>
+            </div>
+        </div>
+        <div id="data-video-who">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6"><h2 class="text-2xl md:text-3xl font-bold font-serif">我的路</h2></div>
+            <div class="w-full w-[95%] xl:w-[85%] aspect-video bg-gray-100 border border-gray-200 ml-auto md:mr-2">
+                <iframe src="https://player.bilibili.com/player.html?isOutside=true&aid=115836123613674&bvid=BV15XiLBfEmH&cid=35182218319&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" referrerpolicy="no-referrer" style="width:100%; height:100%;"></iframe>
+            </div>
+        </div>
+        <div id="data-video-cs">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6"><h2 class="text-2xl md:text-3xl font-bold font-serif">潮汕英歌舞</h2></div>
+            <div class="w-full w-[95%] xl:w-[85%] aspect-video bg-gray-100 border border-gray-200 ml-auto md:mr-2">
+                <iframe src="https://player.bilibili.com/player.html?isOutside=true&aid=116403311023110&bvid=BV12aQGB6E48&cid=37504487261&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" referrerpolicy="no-referrer" style="width:100%; height:100%;"></iframe>
+            </div>
+        </div>
+        <div id="data-video-ss">
+            <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6"><h2 class="text-2xl md:text-3xl font-bold font-serif">数说农情</h2></div>
+            <div class="w-full w-[95%] xl:w-[85%] aspect-video bg-gray-100 border border-gray-200 ml-auto md:mr-2">
+                <iframe src="https://player.bilibili.com/player.html?isOutside=true&aid=116403277404955&bvid=BV1tbQGBkEEZ&cid=37504419629&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" referrerpolicy="no-referrer" style="width:100%; height:100%;"></iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            const arrow = document.getElementById(menuId + '-arrow');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden'); menu.classList.add('flex');
+                if(arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+                menu.classList.add('hidden'); menu.classList.remove('flex');
+                if(arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        const overlay = document.getElementById('inner-page-overlay');
+        const overlayContent = document.getElementById('inner-page-content');
+
+        function openInnerPage(dataId) {
+            const sourceHTML = document.getElementById('data-' + dataId).innerHTML;
+            if (overlay.classList.contains('active')) {
+                overlayContent.style.opacity = '0';
+                setTimeout(() => {
+                    overlayContent.innerHTML = sourceHTML;
+                    overlayContent.style.opacity = '1';
+                }, 300);
+            } else {
+                overlayContent.innerHTML = sourceHTML;
+                overlay.classList.remove('hidden'); overlay.classList.add('flex');
+                document.body.style.overflow = 'hidden'; 
+                setTimeout(() => { overlay.classList.add('active'); overlayContent.style.opacity = '1'; }, 10);
+            }
+        }
+
+        function closeInnerPage() {
+            overlay.classList.remove('active');
+            overlayContent.style.opacity = '0';
+            setTimeout(() => {
+                overlay.classList.add('hidden'); overlay.classList.remove('flex');
+                overlayContent.innerHTML = ''; document.body.style.overflow = ''; 
+            }, 500); 
+        }
+
+        // 拦截主菜单锚点点击
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetEl = document.querySelector(targetId);
+                if (!targetEl) return;
+
+                if (overlay.classList.contains('active')) {
+                    e.preventDefault();
+                    closeInnerPage();
+                    setTimeout(() => { targetEl.scrollIntoView({ behavior: 'smooth' }); }, 500); 
+                }
+            });
+        });
+
+        const mobileMenu = document.getElementById('mobile-menu');
+        document.getElementById('hamburger').addEventListener('click', () => { mobileMenu.classList.remove('hidden'); mobileMenu.classList.add('flex'); });
+        document.getElementById('close-menu').addEventListener('click', () => { mobileMenu.classList.add('hidden'); mobileMenu.classList.remove('flex'); });
+    </script>
+</body>
+</html>
