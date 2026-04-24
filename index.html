@@ -35,11 +35,30 @@
         }
 /* --- 兼容性修复补丁 --- */
         
-        /* 1. 解决 iOS Safari 底部栏玻璃透视和高度计算 bug */
+  /* 1. 彻底封杀 iOS Safari 底部透视与橡皮筋穿透 */
         #inner-page-overlay {
+            position: fixed !important;
+            top: 0 !important; 
+            left: 0 !important; 
+            right: 0 !important; 
+            bottom: 0 !important;
+            width: 100vw !important;
+            /* 针对苹果的魔法属性，强行适配动态地址栏 */
+            height: 100vh !important; 
             height: 100dvh !important;
-            padding-bottom: env(safe-area-inset-bottom);
-            background-color: #ffffff; /* 强制垫底纯白背景 */
+            height: -webkit-fill-available !important; 
+            background-color: #ffffff !important;
+            z-index: 99999 !important; /* 确保盖住所有东西 */
+            /* 核心：把滑动死死锁在这一层，绝不传染给底层主页 */
+            overscroll-behavior: contain !important; 
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        #inner-page-content {
+            /* 在最底下垫一块 120px 的厚实白底，把照片顶上来，彻底避开玻璃条 */
+            padding-bottom: 120px !important; 
+            background-color: #ffffff !important;
+            min-height: 100%;
         }
 
         /* 2. 解决国内安卓浏览器强行劫持图片（同时也能防止别人长按保存你的作品） */
@@ -684,7 +703,7 @@
 
     </div>
 
-    <script>
+<script>
         function toggleMenu(menuId) {
             const menu = document.getElementById(menuId);
             const arrow = document.getElementById(menuId + '-arrow');
@@ -700,11 +719,17 @@
         const overlay = document.getElementById('inner-page-overlay');
         const overlayContent = document.getElementById('inner-page-content');
 
+        // ✨ 新增魔法 1：监听手机的“滑动返回”和“物理返回键”
+        window.addEventListener('popstate', function(event) {
+            // 如果触发了后退，且内页是打开状态，我们就关掉内页，阻止退出网站
+            if (overlay.classList.contains('active')) {
+                executeCloseAnimation();
+            }
+        });
+
         function openInnerPage(dataId) {
-            // 获取隐藏的代码（此时里面全是 data-src，没有发起任何下载请求）
+            // 获取隐藏的代码并解封图片
             let sourceHTML = document.getElementById('data-' + dataId).innerHTML;
-            
-            // ✨ 核心解封魔法：用户点开这页时，瞬间把 data-src 替换回真正的 src，释放下载！
             sourceHTML = sourceHTML.replace(/data-src=/g, 'src=');
 
             if (overlay.classList.contains('active')) {
@@ -713,15 +738,21 @@
                     overlayContent.innerHTML = sourceHTML;
                     overlayContent.style.opacity = '1';
                 }, 300);
+                // 替换当前的历史记录标签
+                history.replaceState({ page: dataId }, '', '#' + dataId);
             } else {
                 overlayContent.innerHTML = sourceHTML;
                 overlay.classList.remove('hidden'); overlay.classList.add('flex');
                 document.body.style.overflow = 'hidden'; 
                 setTimeout(() => { overlay.classList.add('active'); overlayContent.style.opacity = '1'; }, 10);
+                
+                // ✨ 新增魔法 2：打开内页时，往浏览器塞入一条假的历史记录
+                history.pushState({ page: dataId }, '', '#' + dataId);
             }
         }
 
-        function closeInnerPage() {
+        // 真正的关闭动画逻辑抽离出来
+        function executeCloseAnimation() {
             overlay.classList.remove('active');
             overlayContent.style.opacity = '0';
             setTimeout(() => {
@@ -730,11 +761,23 @@
             }, 500); 
         }
 
+        // 网页上的“返回”按钮绑定的函数
+        function closeInnerPage() {
+            // ✨ 新增魔法 3：点击页面上的返回按钮时，优先触发浏览器的后退动作
+            // 这样能保持历史记录干净，并自动触发上面的 popstate 监听器来关闭页面
+            if (history.state && history.state.page) {
+                history.back();
+            } else {
+                executeCloseAnimation();
+            }
+        }
+
         // 拦截主菜单锚点点击
         document.querySelectorAll('a[href^="#"]').forEach(link => {
             link.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
+                if (targetId === '#' || targetId.length <= 1) return;
+                
                 const targetEl = document.querySelector(targetId);
                 if (!targetEl) return;
 
