@@ -33,6 +33,22 @@
         @media (max-width: 767px) {
             .kawauchi-grid > div { width: 100%; }
         }
+/* --- 兼容性修复补丁 --- */
+        
+        /* 1. 解决 iOS Safari 底部栏玻璃透视和高度计算 bug */
+        #inner-page-overlay {
+            height: 100dvh !important;
+            padding-bottom: env(safe-area-inset-bottom);
+            background-color: #ffffff; /* 强制垫底纯白背景 */
+        }
+
+        /* 2. 解决国内安卓浏览器强行劫持图片（同时也能防止别人长按保存你的作品） */
+        img {
+            pointer-events: none; /* 屏蔽所有点击和触摸事件 */
+            -webkit-touch-callout: none; /* 禁用长按弹出菜单 */
+            -webkit-user-drag: none; /* 禁用拖拽 */
+            user-select: none; /* 禁用选中 */
+        }
     </style>
 </head>
 <body class="bg-[#fafafa] text-gray-900 leading-relaxed antialiased relative">
@@ -292,7 +308,7 @@
                             <div class="relative w-full aspect-video bg-gray-100 border border-gray-200 overflow-hidden">
                                 <img src="covers/video-cover-stills.jpg" class="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90">
                             </div>
-                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900 uppercase">视频静帧集</h4></div>
+                            <div class="text-left pl-1 flex-1"><h4 class="text-base font-bold text-gray-900 uppercase">视频静帧集(暂无)</h4></div>
                         </div>
                     </div>
 
@@ -456,7 +472,7 @@
         <div id="data-proj-rswj">
             <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
                 <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">如是我见</h2>
-                <span class="text-xs tracking-widest uppercase text-gray-400 block">Diptychs / 对照观看</span>
+                <span class="text-xs tracking-widest uppercase text-gray-400 block">Life and Existence / 生活充满联系</span>
             </div>
             <div class="grid grid-cols-2 gap-1 md:gap-2 w-full md:w-5/6 lg:w-3/4 ml-auto bg-gray-50 p-2 md:p-4 border border-gray-200">
                 <img data-src="https://zhujinhui-photos.oss-cn-shenzhen.aliyuncs.com/rswj/rswj-01.jpg" loading="lazy" class="w-full h-auto object-contain block">
@@ -501,7 +517,7 @@
         <div id="data-proj-lw">
             <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
                 <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">莱芜的故事</h2>
-                <span class="text-xs tracking-widest uppercase text-gray-400 block">Project Gallery / 项目图集</span>
+                <span class="text-xs tracking-widest uppercase text-gray-400 block">Seaweed and Humans / 馈赠与劳作</span>
             </div>
             <div class="grid grid-cols-2 gap-1 md:gap-2 w-full md:w-5/6 lg:w-3/4 ml-auto bg-gray-50 p-2 md:p-4 border border-gray-200">
                 <img data-src="https://zhujinhui-photos.oss-cn-shenzhen.aliyuncs.com/lw/lw-01.jpg" loading="lazy" class="w-full h-auto object-contain block">
@@ -541,7 +557,7 @@
         <div id="data-proj-ex">
             <div class="w-full w-[95%] xl:w-[85%] ml-auto text-right mb-6 border-b border-gray-200 pb-4 md:pr-4">
                 <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">鳄溪志</h2>
-                <span class="text-xs tracking-widest uppercase text-gray-400 block">Project Gallery / 项目图集</span>
+                <span class="text-xs tracking-widest uppercase text-gray-400 block">Sleep in Hanjiang / 关于一条江的梦</span>
             </div>
             <div class="grid grid-cols-2 gap-1 md:gap-2 w-full md:w-5/6 lg:w-3/4 ml-auto bg-gray-50 p-2 md:p-4 border border-gray-200">
                 <img data-src="https://zhujinhui-photos.oss-cn-shenzhen.aliyuncs.com/ex/ex-01.jpg" loading="lazy" class="w-full h-auto object-contain block">
@@ -638,7 +654,6 @@
                 <h2 class="text-2xl md:text-3xl font-bold mb-2 font-serif text-gray-900">静帧 / Stills</h2>
             </div>
             <div class="flex flex-col items-end space-y-4 w-full">
-                <img data-src="stills/stills-01.jpg" loading="lazy" class="w-auto max-w-full h-auto max-h-[85vh] object-contain block ml-auto">
             </div>
         </div>
 
