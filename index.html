@@ -719,18 +719,24 @@
         const overlay = document.getElementById('inner-page-overlay');
         const overlayContent = document.getElementById('inner-page-content');
 
-        // ✨ 新增魔法 1：监听手机的“滑动返回”和“物理返回键”
-        window.addEventListener('popstate', function(event) {
-            // 如果触发了后退，且内页是打开状态，我们就关掉内页，阻止退出网站
-            if (overlay.classList.contains('active')) {
-                executeCloseAnimation();
+        // ✨ 苹果特攻 1：使用最底层的 hashchange 监听微信右滑，100% 拦截退出
+        window.addEventListener('hashchange', function() {
+            if (!window.location.hash) {
+                if (overlay.classList.contains('active')) {
+                    executeCloseAnimation();
+                }
             }
         });
 
         function openInnerPage(dataId) {
-            // 获取隐藏的代码并解封图片
             let sourceHTML = document.getElementById('data-' + dataId).innerHTML;
             sourceHTML = sourceHTML.replace(/data-src=/g, 'src=');
+
+            // ✨ 苹果特攻 2：物理锁死屏幕！直接用 JS 把主页“钉”在当前位置，神仙也滑不动
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
 
             if (overlay.classList.contains('active')) {
                 overlayContent.style.opacity = '0';
@@ -738,34 +744,36 @@
                     overlayContent.innerHTML = sourceHTML;
                     overlayContent.style.opacity = '1';
                 }, 300);
-                // 替换当前的历史记录标签
-                history.replaceState({ page: dataId }, '', '#' + dataId);
             } else {
                 overlayContent.innerHTML = sourceHTML;
                 overlay.classList.remove('hidden'); overlay.classList.add('flex');
-                document.body.style.overflow = 'hidden'; 
                 setTimeout(() => { overlay.classList.add('active'); overlayContent.style.opacity = '1'; }, 10);
-                
-                // ✨ 新增魔法 2：打开内页时，往浏览器塞入一条假的历史记录
-                history.pushState({ page: dataId }, '', '#' + dataId);
             }
+
+            // ✨ 苹果特攻 3：放弃高级写法，用最原始的 hash 强行给微信塞入历史记录
+            window.location.hash = dataId;
         }
 
-        // 真正的关闭动画逻辑抽离出来
         function executeCloseAnimation() {
             overlay.classList.remove('active');
             overlayContent.style.opacity = '0';
+
+            // ✨ 苹果特攻 4：关闭时拔掉钉子，把主页放回原来的位置
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+
             setTimeout(() => {
                 overlay.classList.add('hidden'); overlay.classList.remove('flex');
-                overlayContent.innerHTML = ''; document.body.style.overflow = ''; 
+                overlayContent.innerHTML = '';
             }, 500); 
         }
 
-        // 网页上的“返回”按钮绑定的函数
         function closeInnerPage() {
-            // ✨ 新增魔法 3：点击页面上的返回按钮时，优先触发浏览器的后退动作
-            // 这样能保持历史记录干净，并自动触发上面的 popstate 监听器来关闭页面
-            if (history.state && history.state.page) {
+            // 点击返回按钮时，优先触发历史后退，联动微信的手势
+            if (window.location.hash) {
                 history.back();
             } else {
                 executeCloseAnimation();
