@@ -719,7 +719,6 @@
         const overlay = document.getElementById('inner-page-overlay');
         const overlayContent = document.getElementById('inner-page-content');
 
-        // ✨ 苹果特攻 1：使用最底层的 hashchange 监听微信右滑，100% 拦截退出
         window.addEventListener('hashchange', function() {
             if (!window.location.hash) {
                 if (overlay.classList.contains('active')) {
@@ -732,7 +731,6 @@
             let sourceHTML = document.getElementById('data-' + dataId).innerHTML;
             sourceHTML = sourceHTML.replace(/data-src=/g, 'src=');
 
-            // ✨ 苹果特攻 2：物理锁死屏幕！直接用 JS 把主页“钉”在当前位置，神仙也滑不动
             const scrollY = window.scrollY;
             document.body.style.position = 'fixed';
             document.body.style.top = `-${scrollY}px`;
@@ -750,7 +748,6 @@
                 setTimeout(() => { overlay.classList.add('active'); overlayContent.style.opacity = '1'; }, 10);
             }
 
-            // ✨ 苹果特攻 3：放弃高级写法，用最原始的 hash 强行给微信塞入历史记录
             window.location.hash = dataId;
         }
 
@@ -758,12 +755,24 @@
             overlay.classList.remove('active');
             overlayContent.style.opacity = '0';
 
-            // ✨ 苹果特攻 4：关闭时拔掉钉子，把主页放回原来的位置
-            const scrollY = document.body.style.top;
+            const scrollYStr = document.body.style.top;
+            const scrollTarget = parseInt(scrollYStr || '0') * -1;
+
             document.body.style.position = '';
             document.body.style.top = '';
             document.body.style.width = '';
-            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+
+            // ✨ 关键修复：临时切断“平滑滚动”神经，实现瞬间瞬移
+            const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+            document.documentElement.style.scrollBehavior = 'auto'; 
+            
+            // 瞬间归位，不带任何动画
+            window.scrollTo({ top: scrollTarget, behavior: 'auto' });
+
+            // 延迟 50 毫秒（肉眼无法察觉），等画面站稳了，再把平滑滚动接回去
+            setTimeout(() => {
+                document.documentElement.style.scrollBehavior = originalScrollBehavior || '';
+            }, 50);
 
             setTimeout(() => {
                 overlay.classList.add('hidden'); overlay.classList.remove('flex');
@@ -772,7 +781,6 @@
         }
 
         function closeInnerPage() {
-            // 点击返回按钮时，优先触发历史后退，联动微信的手势
             if (window.location.hash) {
                 history.back();
             } else {
@@ -780,7 +788,6 @@
             }
         }
 
-        // 拦截主菜单锚点点击
         document.querySelectorAll('a[href^="#"]').forEach(link => {
             link.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
